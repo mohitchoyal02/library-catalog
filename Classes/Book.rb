@@ -7,7 +7,7 @@ class Book
         @year_published = year_published
     end
 
-    def define
+    # def define
         
-    end
+    # end
 end
