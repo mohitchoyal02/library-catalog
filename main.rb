@@ -11,14 +11,17 @@ def display_main_menu
     puts("3. Search by Author")
     puts("4. Search by Genre")
     puts("5. Display Catalog")
-    puts("6. Exit")
+    puts("6. Update Catalog")
+    puts("7. Delete Catalog")
+    puts("8. Exit")
 
     print("Please enter your choice: ")
 
 end
 
 def add_book_menu
-    print "Enter the title of the book: "
+
+    print "\nEnter the title of the book: "
     title = gets.chomp
 
     print "Enter the author of the book: "
@@ -30,6 +33,12 @@ def add_book_menu
     print "Enter the year published: "
     year = gets.chomp
 
+
+
+    if title.empty? || author.empty? || genre.empty? || year.empty?
+        puts "Please Enter Required fields!"
+        add_book_menu
+    end
 
     lib = Library.new
 
@@ -46,9 +55,12 @@ def title_menu
 
     lib = Library.new
     result = lib.search_by_title(title)
-
-    puts "Books match the title '#{title.capitalize}':"
-    puts "#{result[0]} by #{result[1]}"
+    if result == nil
+        puts "Books match the title '#{title.capitalize}' Not Found!!!"
+    else
+        puts "Books match the title '#{title.capitalize}':"
+        puts "#{result[0]} by #{result[1]}"
+    end
 
     display_main_menu
 end
@@ -60,8 +72,12 @@ def author_menu
     lib = Library.new
     result = lib.search_by_author(author)
 
-    puts "Books matching the author '#{author.capitalize}':"
-    puts "#{result[0]} by #{result[1]}"
+    if result == nil
+        puts "Books matching the author '#{author.capitalize}' Not Found!!!"
+    else
+        puts "Books matching the author '#{author.capitalize}':"
+        puts "#{result[0]} by #{result[1]}"
+    end
 
     display_main_menu
 end
@@ -72,10 +88,13 @@ def genre_menu
 
     lib = Library.new
     result = lib.search_by_genre(genre)
-
-    # puts "Books matching the genre '#{genre.capitalize}':"
-    # puts "#{result[0]} by #{result[1]}"
-
+    
+    if result == nil
+        puts "Books matching the genre '#{genre.capitalize}' Not Found!!!"
+    else
+        puts "Books matching the genre '#{genre.capitalize}':"
+        puts "#{result[0]} by #{result[1]}"
+    end
     display_main_menu
 end
 
@@ -94,6 +113,14 @@ def display_catalog
     end
 
     display_main_menu
+end
+
+def update_book_menu
+    
+end
+
+def delete_book_menu
+
 end
 
  
@@ -116,6 +143,10 @@ def start
         when 5
             display_catalog
         when 6
+            update_book_menu
+        when 7
+            delete_book_menu
+        when 8
             puts "Goodbye!"
             break
         else
