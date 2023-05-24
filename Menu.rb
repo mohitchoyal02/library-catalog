@@ -1,6 +1,5 @@
-# $LOAD_PATH << './Classes'
 require "./Classes/Library.rb"
-require "./validator"
+require "./validator.rb"
 
 module Menu
 
@@ -12,8 +11,8 @@ module Menu
     puts("3. Search by Author")
     puts("4. Search by Genre")
     puts("5. Display Catalog")
-    puts("6. Update Catalog")
-    puts("7. Delete Catalog")
+    puts("6. Update Book")
+    puts("7. Delete Book")
     puts("8. Exit")
 
     print("Please enter your choice: ")
@@ -91,13 +90,15 @@ module Menu
         print "Enter the year published: "
         year = gets.chomp
 
-        if !Validator.validate_string(year) || !Validator.valid_year(year)
+        # puts Validator.valid_year(year)
+
+        if !Validator.valid_year(year)
           throw "Empty or Wrong Entry!!!"
         end
       rescue Exception => e
         try += 1
         if(try!=3)
-          puts "Author of Book is Empty or Wrong Entry!!!"
+          puts "Year of Publish is Empty or Wrong Entry!!!"
           retry
         else
           puts "Maximum Wrong attempt"
@@ -183,7 +184,30 @@ def self.display_catalog
   end
 
   def self.update_book_menu
+    try = 0
+    begin
+      print "\nEnter the title of the book you want to update: "
+      title = gets.chomp
+      if(!Validator.validate_string(title))
+        throw "Empty Field"
+      end
+    rescue Exception => e
+      try += 1
+      if(try!=3)
+        puts "Title of Book is Empty!!!"
+        retry
+      else
+        puts "Maximum Wrong attempt"
+        flag = false
+        try = 0
+      end
+    end
 
+    lib = Library.new
+
+    lib.update_book(title)
+
+    self.display_main_menu
   end
 
   def self.delete_book_menu

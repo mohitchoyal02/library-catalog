@@ -1,37 +1,33 @@
-$LOAD_PATH << "./Classes"
-require "Book.rb"
+$LOAD_PATH << "../"
 require 'csv'
+require './validator.rb'
 
 class Library
     def add_book(title, author, genre, year_published)
         # b = Book.new(title, author, genre, year_published)
 
         title = title.capitalize
-        author = author.capitalize
-        genre = genre.capitalize
+        title.strip
 
-        begin
-            flag = true
-            csv_table = CSV.table("./books.csv", converters: :all)
-            csv_table.find  do |row|
-                if row.field(:title) == title
-                    puts "Book with title '#{title}' already exists in catalog"
-                    flag = false
-                end
+        author = author.capitalize
+        author = author.strip
+
+        genre = genre.capitalize
+        genre = genre.strip
+
+        if Validator.validate_book(title)
+            CSV.open('books.csv', "ab") do |book|
+                book << [title, author, genre, year_published]
             end
-            if flag
-                CSV.open('books.csv', "ab") do |book|
-                    book << [title, author, genre, year_published]
-                end
-                puts("Book added successfully!")
-            end
-        rescue
-            puts "Error"
+            puts("Book added successfully!")
+        else
+            puts "Book with title '#{title}' already exists in catalog"
         end
     end
 
     def search_by_title(title)
         title = title.capitalize
+        title = title.strip
 
         begin
             csv_table = CSV.table("./books.csv", converters: :all)
@@ -46,6 +42,7 @@ class Library
 
     def search_by_author(author)
         author = author.capitalize
+        author = author.strip
 
         begin
             csv_table = CSV.table("./books.csv", converters: :all)
@@ -60,6 +57,7 @@ class Library
 
     def search_by_genre(genre)
         genre = genre.capitalize
+        genre = genre.strip
 
         begin
             csv_table = CSV.table("./books.csv", converters: :all)
@@ -82,10 +80,143 @@ class Library
     end
 
     def update_book(title)
+        
+        title = title.capitalize!
+        # puts title
 
+        found = false
+
+        csv_table = CSV.table("./books.csv", converters: :all)
+        result = csv_table.find  do |row|
+            if row.field(:title) == title
+                updated_row = row
+                puts "Found"
+                found = true
+                break
+            end
+        end
+        
+        if found
+            try = 0;
+            flag = true
+
+            if flag
+            begin
+                print "\nEnter the new title for book: "
+                new_title = gets.chomp
+                new_title = new_title.capitalize
+                new_title = new_title.strip
+                if(!Validator.validate_string(new_title))
+                throw "Empty Field"
+                end
+            rescue Exception => e
+                try += 1
+                if(try!=3)
+                puts "Title of Book is Empty!!!"
+                retry
+                else
+                puts "Maximum Wrong attempt"
+                flag = false
+                try = 0
+                end
+            end
+            end
+
+            if flag
+            begin
+                print "Enter the new author for book: "
+                new_author = gets.chomp
+                new_author = new_author.capitalize
+                new_author = new_author.strip
+                if !Validator.validate_string(new_author)
+                throw "Empty Field"
+                end
+            rescue Exception =>e
+                try += 1
+                if(try!=3)
+                puts "Author of Book is Empty!!!"
+                retry
+                else
+                puts "Maximum Wrong attempt"
+                try = 0
+                flag = false
+                end
+            end
+            end
+
+            if flag
+            begin
+                print "Enter the new genre for book: "
+                new_genre = gets.chomp
+                new_genre = new_genre.capitalize
+                new_genre = new_genre.strip
+
+                if !Validator.validate_string(new_genre)
+                throw "Empty Field!!!"
+                end
+            rescue Exception => e
+                try += 1
+                if(try!=3)
+                puts "Genre of Book is Empty!!!"
+                retry
+                else
+                puts "Maximum Wrong attempt"
+                try = 0
+                flag = 0
+                end
+            end
+            end
+
+            if flag
+            begin
+                print "Enter the new Year of Publish of book: "
+                new_year = gets.chomp
+                new_year = new_year.strip
+
+                # puts Validator.valid_year(year)
+
+                if !Validator.valid_year(new_year)
+                throw "Empty or Wrong Entry!!!"
+                end
+            rescue Exception => e
+                try += 1
+                if(try!=3)
+                puts "Year of Publish is Empty or Wrong Entry!!!"
+                retry
+                else
+                puts "Maximum Wrong attempt"
+                try = 0
+                flag = false
+                end
+            end
+            end
+
+            if !flag
+            puts "Error! Please try again later"
+            else
+                # puts "Updated"
+                # CSV.open("./books.csv", "ab") do |csv_write|
+                updated_row = [new_title, new_author, new_genre, new_year]
+                rows = CSV.read("./books.csv")
+
+                rows.each do |row|
+                    if row[0] == title
+                        row.replace(updated_row)
+                    end
+                end
+
+                CSV.open("./books.csv", "w") do |csv|
+                    rows.each do |row|
+                        csv << row
+                    end
+                end
+            end
+        else
+            puts "Book with '#{title}' not Found, Please Try Again."
+        end
     end
 
     def delete_book (title)
-
+        
     end
 end
