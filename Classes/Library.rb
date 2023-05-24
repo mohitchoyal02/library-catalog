@@ -10,13 +10,26 @@ class Library
         author = author.capitalize
         genre = genre.capitalize
 
-        CSV.open('books.csv', "ab") do |book|
-            book << [title, author, genre, year_published]
+        begin
+            flag = true
+            csv_table = CSV.table("./books.csv", converters: :all)
+            csv_table.find  do |row|
+                if row.field(:title) == title
+                    puts "Book with title '#{title}' already exists in catalog"
+                    flag = false
+                end
+            end
+            if flag
+                CSV.open('books.csv', "ab") do |book|
+                    book << [title, author, genre, year_published]
+                end
+                puts("Book added successfully!")
+            end
+        rescue
+            puts "Error"
         end
-
-        puts("Book added successfully!")
     end
-    
+
     def search_by_title(title)
         title = title.capitalize
 
@@ -66,5 +79,13 @@ class Library
             result << book
         end
         return csv_table
+    end
+
+    def update_book(title)
+
+    end
+
+    def delete_book (title)
+
     end
 end

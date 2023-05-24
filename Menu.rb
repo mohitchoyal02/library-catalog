@@ -34,7 +34,7 @@ module Menu
         end
       rescue Exception => e
         try += 1
-        if(try!=2)
+        if(try!=3)
           puts "Title of Book is Empty!!!"
           retry
         else
@@ -54,7 +54,7 @@ module Menu
         end
       rescue Exception =>e
         try += 1
-        if(try!=2)
+        if(try!=3)
           puts "Author of Book is Empty!!!"
           retry
         else
@@ -75,13 +75,13 @@ module Menu
         end
       rescue Exception => e
         try += 1
-        if(try!=2)
+        if(try!=3)
           puts "Genre of Book is Empty!!!"
           retry
         else
           puts "Maximum Wrong attempt"
           try = 0
-          falg = 0
+          flag = 0
         end
       end
     end
@@ -91,17 +91,19 @@ module Menu
         print "Enter the year published: "
         year = gets.chomp
 
-        if year.empty?
-          throw "Empty Field!!!"
+        if !Validator.validate_string || !Validator.valid_year(year)
+          # puts Validator.valid_year(year)
+          throw "Empty or Wrong Entry!!!"
         end
       rescue Exception => e
         try += 1
-        if(try!=2)
-          puts "Author of Book is Empty!!!"
+        if(try!=3)
+          puts "Author of Book is Empty or Wrong Entry!!!"
           retry
         else
           puts "Maximum Wrong attempt"
           try = 0
+          flag = false
         end
       end
     end

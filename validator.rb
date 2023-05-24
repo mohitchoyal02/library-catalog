@@ -13,7 +13,14 @@ module Validator
             return !flag
         end
     end
+    def valid_year (year)
+        pattern = /^\d{4}$/
+        matches = year.match?(pattern)
+        puts matches
+        if(matches)
+            return true
+        else
+            return false
+        end
+    end
 end
-
-
-puts Validator.validate_string("    m")
