@@ -1,5 +1,5 @@
-$LOAD_PATH << './Classes'
-require "Library.rb"
+# $LOAD_PATH << './Classes'
+require "./Classes/Library.rb"
 require "./validator"
 
 module Menu
@@ -91,8 +91,7 @@ module Menu
         print "Enter the year published: "
         year = gets.chomp
 
-        if !Validator.validate_string || !Validator.valid_year(year)
-          # puts Validator.valid_year(year)
+        if !Validator.validate_string(year) || !Validator.valid_year(year)
           throw "Empty or Wrong Entry!!!"
         end
       rescue Exception => e
