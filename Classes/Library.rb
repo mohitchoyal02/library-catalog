@@ -81,7 +81,8 @@ class Library
 
     def update_book(title)
         
-        title = title.capitalize!
+        title = title.capitalize
+        title = title.strip
         # puts title
 
         found = false
@@ -194,8 +195,6 @@ class Library
             if !flag
             puts "Error! Please try again later"
             else
-                # puts "Updated"
-                # CSV.open("./books.csv", "ab") do |csv_write|
                 updated_row = [new_title, new_author, new_genre, new_year]
                 rows = CSV.read("./books.csv")
 
@@ -217,6 +216,37 @@ class Library
     end
 
     def delete_book (title)
-        
+        title = title.capitalize
+        title = title.strip
+
+        found = false
+
+        csv_table = CSV.table("./books.csv", converters: :all)
+        result = csv_table.find  do |row|
+            if row.field(:title) == title
+                updated_row = row
+                puts "Found"
+                found = true
+                break
+            end
+        end
+
+        if found
+            csv = CSV.read("./books.csv")
+            csv.each do |row|
+                row.delete_if do |r|
+                    r == title
+                end
+            end
+            CSV.open("./new_books.csv", "w") do |new_csv|
+                csv.each do |row|
+                    new_csv << row
+                end
+            end
+            puts "Book '#{title}' has been Deleted.\n"
+        else
+            puts "Book with '#{title}' not Found, Please Try Again."
+        end
+
     end
 end

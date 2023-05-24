@@ -211,6 +211,12 @@ def self.display_catalog
   end
 
   def self.delete_book_menu
+    puts "Enter the title of book you want to delete: "
+    title = gets.chomp
 
+    lib = Library.new
+    lib.delete_book(title)
+
+    display_main_menu
   end
 end
