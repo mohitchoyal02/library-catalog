@@ -1,3 +1,5 @@
+require "time"
+
 module Validator
     def Validator.validate_string(str)
         if str.empty?
@@ -16,14 +18,19 @@ module Validator
 
     def Validator.valid_year(year)
        begin
+            time = Time.new
             pattern = /^\d{4}$/
             matches = pattern =~ year
-            if(matches)
+            new_date = year.to_i
+            right = time.year >= new_date 
+
+            if(matches && right)
+
                 return true
             end
             return false
         rescue
-            puts "Error!!!"
+            return false
         end
     end
 

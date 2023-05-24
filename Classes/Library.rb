@@ -1,6 +1,7 @@
 $LOAD_PATH << "../"
 require 'csv'
 require './validator.rb'
+require './search.rb'
 
 class Library
     def add_book(title, author, genre, year_published)
@@ -28,12 +29,11 @@ class Library
     def search_by_title(title)
         title = title.capitalize
         title = title.strip
+        
+        search = Search.new
 
         begin
-            csv_table = CSV.table("./books.csv", converters: :all)
-            result = csv_table.find  do |row|
-                row.field(:title) == title
-            end
+            result = search.search_by_title(title)
             return result
         rescue
             return nil
@@ -209,6 +209,9 @@ class Library
                         csv << row
                     end
                 end
+
+                puts "Book Updated from #{title} to #{new_title}"
+
             end
         else
             puts "Book with '#{title}' not Found, Please Try Again."
@@ -233,17 +236,19 @@ class Library
 
         if found
             csv = CSV.read("./books.csv")
-            csv.each do |row|
-                row.delete_if do |r|
-                    r == title
-                end
-            end
-            CSV.open("./new_books.csv", "w") do |new_csv|
+            # csv.each do |row|
+            #     row.delete_if do |r|
+            #         r == title
+            #     end
+            # end
+            CSV.open("./books.csv", "w") do |new_csv|
                 csv.each do |row|
-                    new_csv << row
+                    if row[0] != title
+                        new_csv << row
+                    end
                 end
             end
-            puts "Book '#{title}' has been Deleted.\n"
+            puts "Book '#{title}' has been Deleted.\n  "
         else
             puts "Book with '#{title}' not Found, Please Try Again."
         end

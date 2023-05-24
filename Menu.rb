@@ -127,7 +127,7 @@ module Menu
         puts "Books match the title '#{title.capitalize}' Not Found!!!"
     else
         puts "Books match the title '#{title.capitalize}':"
-        puts "#{result[0]} by #{result[1]}"
+        # puts "#{result[0]} by #{result[1]}"
     end
 
     self.display_main_menu
@@ -172,12 +172,14 @@ def self.display_catalog
 
     i = 0
 
-    puts "    Title          Author          Genre          Year Published"
+    puts "  S No.    Title          Author          Genre          Year Published"
     puts "-------------------------------------------------------------------------"
 
+    i = 1
     result.each do |row|
        arr = "#{row}".split(',')
-       puts "     #{arr[0]}           #{arr[1]}               #{arr[2]}          #{arr[3]}\n"
+       puts "  #{i}     #{arr[0]}           #{arr[1]}               #{arr[2]}          #{arr[3]}\n"
+       i+=1
     end
 
     self.display_main_menu
