@@ -56,4 +56,7 @@ module Validator
             puts "Error"
         end
     end
+    def validate_Search(search, res)
+
+    end
 end

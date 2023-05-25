@@ -123,11 +123,14 @@ module Menu
 
     lib = Library.new
     result = lib.search_by_title(title)
-    if result == nil
+    if result.empty?
         puts "Books match the title '#{title.capitalize}' Not Found!!!"
     else
         puts "Books match the title '#{title.capitalize}':"
         # puts "#{result[0]} by #{result[1]}"
+        result.each do |res|
+          puts res
+        end
     end
 
     self.display_main_menu
@@ -140,11 +143,13 @@ module Menu
     lib = Library.new
     result = lib.search_by_author(author)
 
-    if result == nil
+    if result.empty?
         puts "Books matching the author '#{author.capitalize}' Not Found!!!"
     else
         puts "Books matching the author '#{author.capitalize}':"
-        puts "#{result[0]} by #{result[1]}"
+        result.each do |res|
+          puts res
+        end
     end
 
     self.display_main_menu
@@ -157,11 +162,13 @@ module Menu
     lib = Library.new
     result = lib.search_by_genre(genre)
 
-    if result == nil
+    if result.empty?
         puts "Books matching the genre '#{genre.capitalize}' Not Found!!!"
     else
         puts "Books matching the genre '#{genre.capitalize}':"
-        puts "#{result[0]} by #{result[1]}"
+        result.each do |res|
+          puts res
+        end
     end
     self.display_main_menu
   end

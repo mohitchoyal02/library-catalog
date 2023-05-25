@@ -7,13 +7,13 @@ class Library
     def add_book(title, author, genre, year_published)
         # b = Book.new(title, author, genre, year_published)
 
-        title = title.capitalize
+        title = title.downcase
         title.strip
 
-        author = author.capitalize
+        author = author.downcase
         author = author.strip
 
-        genre = genre.capitalize
+        genre = genre.downcase
         genre = genre.strip
 
         if Validator.validate_book(title)
@@ -27,13 +27,13 @@ class Library
     end
 
     def search_by_title(title)
-        title = title.capitalize
+        title = title.downcase
         title = title.strip
         
         search = Search.new
+        result = search.search_title(title)
 
         begin
-            result = search.search_by_title(title)
             return result
         rescue
             return nil
@@ -41,14 +41,13 @@ class Library
     end
 
     def search_by_author(author)
-        author = author.capitalize
+        author = author.downcase
         author = author.strip
 
+        search = Search.new
+        result = search.search_author(author)
+
         begin
-            csv_table = CSV.table("./books.csv", converters: :all)
-            result = csv_table.find  do |row|
-                row.field(:author) == author
-            end
             return result
         rescue
             return nil
@@ -56,14 +55,13 @@ class Library
     end
 
     def search_by_genre(genre)
-        genre = genre.capitalize
+        genre = genre.downcase
         genre = genre.strip
 
+        search = Search.new
+        result = search.search_genre(genre)
+
         begin
-            csv_table = CSV.table("./books.csv", converters: :all)
-            result = csv_table.find  do |row|
-                row.field(:genre) == genre
-            end
             return result
         rescue
             return nil
@@ -81,11 +79,13 @@ class Library
 
     def update_book(title)
         
-        title = title.capitalize
+        title = title.downcase
         title = title.strip
         # puts title
 
         found = false
+
+        updated_row = []
 
         csv_table = CSV.table("./books.csv", converters: :all)
         result = csv_table.find  do |row|
@@ -103,18 +103,17 @@ class Library
 
             if flag
             begin
-                print "\nEnter the new title for book: "
+                print "\nEnter the new title for book (#{updated_row[0].capitalize}): "
                 new_title = gets.chomp
-                new_title = new_title.capitalize
+                new_title = new_title.downcase
                 new_title = new_title.strip
                 if(!Validator.validate_string(new_title))
-                throw "Empty Field"
+                new_title = updated_row[0]
                 end
             rescue Exception => e
                 try += 1
                 if(try!=3)
-                puts "Title of Book is Empty!!!"
-                retry
+                # puts "Title of Book is Empty!!!"
                 else
                 puts "Maximum Wrong attempt"
                 flag = false
@@ -125,18 +124,18 @@ class Library
 
             if flag
             begin
-                print "Enter the new author for book: "
+                print "Enter the new author for book(#{updated_row[1].capitalize}): "
                 new_author = gets.chomp
-                new_author = new_author.capitalize
+                new_author = new_author.downcase
                 new_author = new_author.strip
                 if !Validator.validate_string(new_author)
-                throw "Empty Field"
+                new_author = updated_row[1]
                 end
             rescue Exception =>e
                 try += 1
                 if(try!=3)
                 puts "Author of Book is Empty!!!"
-                retry
+                # retry
                 else
                 puts "Maximum Wrong attempt"
                 try = 0
@@ -147,13 +146,14 @@ class Library
 
             if flag
             begin
-                print "Enter the new genre for book: "
+                print "Enter the new genre for book(#{updated_row[2].capitalize}): "
                 new_genre = gets.chomp
-                new_genre = new_genre.capitalize
+                new_genre = new_genre.downcase
                 new_genre = new_genre.strip
 
                 if !Validator.validate_string(new_genre)
-                throw "Empty Field!!!"
+                # throw "Empty Field!!!"
+                new_genre = updated_row[2]
                 end
             rescue Exception => e
                 try += 1
@@ -170,14 +170,15 @@ class Library
 
             if flag
             begin
-                print "Enter the new Year of Publish of book: "
+                print "Enter the new Year of Publish of book (#{updated_row[3]}): "
                 new_year = gets.chomp
                 new_year = new_year.strip
 
                 # puts Validator.valid_year(year)
-
-                if !Validator.valid_year(new_year)
-                throw "Empty or Wrong Entry!!!"
+                if(new_year.empty?)
+                    new_year = updated_row[3]
+                elsif !Validator.valid_year(new_year)
+                    throw "Empty or Wrong Entry!!!"
                 end
             rescue Exception => e
                 try += 1
@@ -219,7 +220,7 @@ class Library
     end
 
     def delete_book (title)
-        title = title.capitalize
+        title = title.downcase
         title = title.strip
 
         found = false
